@@ -14,19 +14,23 @@ namespace gr2_api.Repository
         public DbSet<Usuario> Usuarios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<Usuario>(entity =>
         {
-            entity.OwnsOne(u => u.Email, email =>
+            modelBuilder.Entity<Usuario>(entity =>
             {
-                email.Property(e => e.Value).HasColumnName("Email").IsRequired();
-            });
+                entity.OwnsOne(u => u.Email, email =>
+                {
+                    email.Property(e => e.Value)
+                         .HasColumnName("Email")
+                         .IsRequired();
+                });
 
-            entity.OwnsOne(u => u.Senha, senha =>
-            {
-                senha.Property(s => s.Value).HasColumnName("Senha").IsRequired();
+                entity.OwnsOne(u => u.Senha, senha =>
+                {
+                    senha.Property(s => s.Value)
+                         .HasColumnName("Senha")
+                         .IsRequired();
+                });
             });
-        });
-    }
+        }
     }
 }

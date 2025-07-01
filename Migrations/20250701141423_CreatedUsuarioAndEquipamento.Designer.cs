@@ -11,8 +11,8 @@ using gr2_api.Repository;
 namespace gr2_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250701140436_UpdateSenhaFiled")]
-    partial class UpdateSenhaFiled
+    [Migration("20250701141423_CreatedUsuarioAndEquipamento")]
+    partial class CreatedUsuarioAndEquipamento
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
