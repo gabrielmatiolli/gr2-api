@@ -1,3 +1,5 @@
+using gr2_api.Controllers.ViewModels.Request;
+using gr2_api.Controllers.ViewModels.Response;
 using gr2_api.Models;
 using gr2_api.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -16,10 +18,16 @@ namespace gr2_api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Usuario>>> GetAllUsuarios()
+        public async Task<ActionResult<List<UsuarioResponseViewModel>>> GetAllUsuarios()
         {
             var usuarios = await _usuariosService.GetAllUsuariosAsync();
-            return Ok(usuarios);
+            var usuarioDtos = usuarios.Select(usuario => new UsuarioResponseViewModel
+            {
+                Id = usuario.Id,
+                Nome = usuario.Nome,
+                Email = usuario.Email.ToString()
+            }).ToList();
+            return Ok(usuarioDtos);
         }
 
         [HttpGet("{id}")]
@@ -34,16 +42,18 @@ namespace gr2_api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Usuario>> CreateUsuario(Usuario usuario)
+        public async Task<ActionResult<UsuarioResponseViewModel>> CreateUsuario([FromBody] UsuarioRequestViewModel request)
         {
-            var result = await _usuariosService.AddUsuarioAsync(usuario);
+            var usuario = await _usuariosService.AddUsuarioAsync(request);
+            if (!usuario.Success) return BadRequest(usuario.Error);
 
-            if (!result.Success)
+            var response = new UsuarioResponseViewModel
             {
-                return BadRequest(result.Error);
-            }
-            
-            return CreatedAtAction(nameof(GetUsuarioById), new { id = result.Data.Id }, result.Data);
+                Id = usuario.Data.Id,
+                Nome = usuario.Data.Nome,
+                Email = usuario.Data.Email.ToString()
+            };
+            return CreatedAtAction(nameof(GetUsuarioById), new { id = usuario.Data.Id }, response);
         }
 
         [HttpPut("{id}")]
