@@ -40,20 +40,15 @@ namespace gr2_api.Services
                 return ServiceResult<Usuario>.Fail("Usuário já existe com este email.");
             }
 
-            var emailResult = Email.Create(usuario.Email.ToString());
+            var emailResult = Email.Create(usuario.Email?.Value ?? usuario.Email?.ToString());
             if (!emailResult.IsSuccess)
-            {
                 return ServiceResult<Usuario>.Fail(emailResult.Error);
-            }
+
+            var senhaResult = Senha.Create(usuario.Senha?.Value ?? usuario.Senha?.ToString());
+            if (!senhaResult.IsSuccess)
+                return ServiceResult<Usuario>.Fail(senhaResult.Error);
 
             usuario.Email = emailResult.Value;
-
-            var senhaResult = Senha.Create(usuario.Senha.ToString());
-            if (!senhaResult.IsSuccess)
-            {
-                return ServiceResult<Usuario>.Fail(senhaResult.Error);
-            }
-
             usuario.Senha = senhaResult.Value;
 
             _context.Usuarios.Add(usuario);

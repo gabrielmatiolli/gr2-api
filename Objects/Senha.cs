@@ -4,7 +4,9 @@ namespace gr2_api.Objects;
 
 public class Senha
 {
-  public string Value { get; }
+  public string Value { get; private set; }
+
+  public Senha() { }
 
   public Senha(string value)
   {

@@ -8,7 +8,10 @@ public class Email
       @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
       RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-  public string Value { get; }
+  public string Value { get; private set; }
+
+  public Email() { }
+
   public Email(string value)
   {
     Value = value;

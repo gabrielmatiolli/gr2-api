@@ -14,12 +14,9 @@ namespace gr2_api.Models
         public string Nome { get; set; }
 
         [Required(ErrorMessage = "Email é obrigatório.")]
-        [EmailAddress(ErrorMessage = "Email inválido.")]
         public Email Email { get; set; }
 
         [Required(ErrorMessage = "Senha é obrigatória.")]
-        [StringLength(100, ErrorMessage = "Senha deve ter no máximo 100 caracteres.")]
-        [MinLength(6, ErrorMessage = "Senha deve ter pelo menos 6 caracteres.")]
         public Senha Senha { get; set; }
     }
 }
