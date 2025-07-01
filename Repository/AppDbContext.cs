@@ -1,5 +1,7 @@
 using gr2_api.Models;
+using gr2_api.Objects;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace gr2_api.Repository
 {
@@ -15,21 +17,27 @@ namespace gr2_api.Repository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            var emailConverter = new ValueConverter<Email, string>(
+                e => e.Value,
+                v => Email.Create(v).Value
+            );
+
+            var senhaConverter = new ValueConverter<Senha, string>(
+                s => s.Value,
+                v => new Senha(v)
+            );
+
             modelBuilder.Entity<Usuario>(entity =>
             {
-                entity.OwnsOne(u => u.Email, email =>
-                {
-                    email.Property(e => e.Value)
-                         .HasColumnName("Email")
-                         .IsRequired();
-                });
+                entity.Property(u => u.Email)
+                    .HasConversion(emailConverter)
+                    .HasColumnName("Email")
+                    .IsRequired();
 
-                entity.OwnsOne(u => u.Senha, senha =>
-                {
-                    senha.Property(s => s.Value)
-                         .HasColumnName("Senha")
-                         .IsRequired();
-                });
+                entity.Property(u => u.Senha)
+                    .HasConversion(senhaConverter)
+                    .HasColumnName("Senha")
+                    .IsRequired();
             });
         }
     }

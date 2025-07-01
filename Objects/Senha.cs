@@ -6,8 +6,6 @@ public class Senha
 {
   public string Value { get; private set; }
 
-  public Senha() { }
-
   public Senha(string value)
   {
     Value = value;
