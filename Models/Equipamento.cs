@@ -10,5 +10,7 @@ namespace gr2_api.Models
         [Required(ErrorMessage = "Nome é obrigatório.")]
         [StringLength(100, ErrorMessage = "Nome deve ter no máximo 100 caracteres.")]
         public string Nome { get; set; }
+
+        public ICollection<Componente> Componentes { get; set; } = new List<Componente>();
     }
 }
