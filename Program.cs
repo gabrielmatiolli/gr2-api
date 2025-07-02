@@ -1,3 +1,5 @@
+using gr2_api.Interfaces.Repository;
+using gr2_api.Interfaces.Services;
 using gr2_api.Repository;
 using gr2_api.Services;
 using Microsoft.EntityFrameworkCore;
@@ -9,8 +11,13 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
-builder.Services.AddScoped<EquipamentosService>();
-builder.Services.AddScoped<UsuariosService>();
+builder.Services.AddScoped<IEquipamentoRepository, EquipamentoRepository>();
+builder.Services.AddScoped<IUsuariosRepository, UsuariosRepository>();
+builder.Services.AddScoped<IComponentesRepository, ComponentesRepository>();
+
+builder.Services.AddScoped<IEquipamentosService, EquipamentosService>();
+builder.Services.AddScoped<IUsuariosService, UsuariosService>();
+builder.Services.AddScoped<IComponentesService, ComponentesService>();
 
 builder.Services.AddControllers();
 

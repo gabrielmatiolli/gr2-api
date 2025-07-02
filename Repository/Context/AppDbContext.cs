@@ -15,6 +15,8 @@ namespace gr2_api.Repository
 
         public DbSet<Usuario> Usuarios { get; set; }
 
+        public DbSet<Componente> Componentes { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             var emailConverter = new ValueConverter<Email, string>(

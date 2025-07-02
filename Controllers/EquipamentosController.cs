@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using gr2_api.Services;
-using gr2_api.Models;
+using gr2_api.Controllers.ViewModels.Response;
+using gr2_api.Controllers.ViewModels.Request;
+using gr2_api.Interfaces.Services;
 
 namespace gr2_api.Controllers
 {
@@ -8,22 +9,25 @@ namespace gr2_api.Controllers
     [Route("api/[controller]")]
     public class EquipamentosController : ControllerBase
     {
-        private readonly EquipamentosService _equipamentosService;
+        private readonly IEquipamentosService _equipamentosService;
 
-        public EquipamentosController(EquipamentosService equipamentosService)
+        public EquipamentosController(IEquipamentosService equipamentosService)
         {
             _equipamentosService = equipamentosService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Equipamento>>> GetAllEquipamentos()
+        public async Task<ActionResult<List<EquipamentosResponseViewModel>>> GetAllEquipamentos()
         {
             var equipamentos = await _equipamentosService.GetAllEquipamentosAsync();
+            if (!equipamentos.Success) return BadRequest(equipamentos.Error);
+
             return Ok(equipamentos);
+
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Equipamento>> GetEquipamentoById(int id)
+        public async Task<ActionResult<EquipamentosResponseViewModel>> GetEquipamentoById(int id)
         {
             var equipamento = await _equipamentosService.GetEquipamentoByIdAsync(id);
             if (equipamento == null)
@@ -34,19 +38,19 @@ namespace gr2_api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddEquipamento(Equipamento equipamento)
+        public async Task<ActionResult> AddEquipamento([FromBody]EquipamentoRequestViewModel request)
         {
-            await _equipamentosService.AddEquipamentoAsync(equipamento);
-            return CreatedAtAction(nameof(GetEquipamentoById), new { id = equipamento.Id }, equipamento);
+            var result = await _equipamentosService.AddEquipamentoAsync(request);
+            if (result.Success)
+            {
+                return CreatedAtAction(nameof(GetEquipamentoById), new { id = result.Data.Id }, result.Data);
+            }
+            return BadRequest(result.Error);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateEquipamento(int id, Equipamento equipamento)
+        public async Task<ActionResult> UpdateEquipamento(int id, EquipamentoRequestViewModel request)
         {
-            if (id != equipamento.Id)
-            {
-                return BadRequest();
-            }
 
             var existingEquipamento = await _equipamentosService.GetEquipamentoByIdAsync(id);
             if (existingEquipamento == null)
@@ -54,7 +58,7 @@ namespace gr2_api.Controllers
                 return NotFound();
             }
 
-            await _equipamentosService.UpdateEquipamentoAsync(equipamento);
+            await _equipamentosService.UpdateEquipamentoAsync(request);
             return NoContent();
         }
 

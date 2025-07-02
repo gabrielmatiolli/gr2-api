@@ -1,5 +1,6 @@
 using gr2_api.Controllers.ViewModels.Request;
 using gr2_api.Controllers.ViewModels.Response;
+using gr2_api.Interfaces.Services;
 using gr2_api.Models;
 using gr2_api.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -10,9 +11,9 @@ namespace gr2_api.Controllers
     [Route("api/[controller]")]
     public class UsuariosController : ControllerBase
     {
-        private readonly UsuariosService _usuariosService;
+        private readonly IUsuariosService _usuariosService;
 
-        public UsuariosController(UsuariosService usuariosService)
+        public UsuariosController(IUsuariosService usuariosService)
         {
             _usuariosService = usuariosService;
         }
